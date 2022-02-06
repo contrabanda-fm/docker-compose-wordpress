@@ -1,0 +1,29 @@
+services:
+  db:
+    container_name: "${DB_HOST}"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    image: mariadb
+    restart: "${DB_RESTART}"
+    volumes:
+      - "${VOLUME_DB}:/var/lib/mysql"
+  wordpress:
+    container_name: "${WORDPRESS_HOST}"
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: "${DB_HOST}"
+      WORDPRESS_DB_USER: "${MYSQL_USER}"
+      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
+      WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
+    image: wordpress
+    ports:
+      - "${WORDPRESS_PORT}:80"
+    restart: "${WORDPRESS_RESTART}"
+    volumes:
+      - "${VOLUME_WORDPRESS}:/var/www/html"
+
+version: "3.9"
